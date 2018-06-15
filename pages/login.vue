@@ -4,7 +4,7 @@
       <div class="login__sideContent">
         <img class="login__logo" width="135" src="~assets/img/accio_logo.png">
         <div class="login__textContent">
-          <span class="login__mainHeadline">Discover what<span class="blue"> you already have done.</span></span>
+          <span class="login__mainHeadline">Create<span class="blue">, dont repeat.</span></span>
           <p class="login__secondHeadline">Accio lets everyone in the company browse your development history and load components with project management information.</p>
         </div>
         <div class="login__githubContainer">
