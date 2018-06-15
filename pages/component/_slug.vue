@@ -8,9 +8,16 @@
           </h1>
         </div>
       </div>
-      <nuxt-link class="editInfos" :to="`/repos/${$store.getters.active_repo.name}/${$store.getters.active_category}`"><i class="fa fa-caret-left"></i> Back to {{$store.getters.active_category}}</nuxt-link>
-      <button v-if="!editMode" class="editBtn" @click.prevent="displayInputs">Modify</button>
-      <button v-if="editMode" class="editBtn" @click.prevent="toggleEditMode">Cancel</button>
+      <div class="flex align-center justify-between">
+        <div>
+          <nuxt-link class="editInfos" :to="`/repos/${$store.getters.active_repo.name}/${$store.getters.active_category}`"><i class="fa fa-caret-left"></i> Back to {{$store.getters.active_category}}</nuxt-link>
+        </div>
+        <div>
+          <button v-if="!editMode" class="editBtn" @click.prevent="displayInputs">Modify</button>
+          <button v-if="editMode" class="editBtn" @click.prevent="toggleEditMode">Cancel</button>
+          <button v-if="editMode" class="deleteComponentBtn view-left" @click.prevent="deleteComponent">Delete Component</button>
+        </div>
+      </div>
     </div>
     <div class="row infos-sections">
       <div v-if="configFile !== null" class="component-datas">
@@ -193,6 +200,52 @@ export default {
           this.files = JSON.parse(res.data);
           this.getComponentFilesContent();
         });
+    },
+    deleteComponent() {
+      this.files.forEach(file => {
+        axios({
+          method: "delete",
+          url: `https://api.github.com/repos/${
+            this.$store.getters.active_repo.owner
+          }/${this.$store.getters.active_repo.name}/contents/${
+            this.$store.getters.active_category
+          }/${this.$route.params.slug}/${file.name}?access_token=${
+            this.$store.getters.access_token
+          }`,
+          data: {
+            message: `:octopus: Accio delete : ` + this.$route.params.slug,
+            sha: file.sha
+          },
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(res => {
+          axios({
+            method: "delete",
+            url: `https://api.github.com/repos/${
+              this.$store.getters.active_repo.owner
+            }/${this.$store.getters.active_repo.name}/contents/${
+              this.$store.getters.active_category
+            }/${this.$route.params.slug}/${this.configFile.name}?access_token=${
+              this.$store.getters.access_token
+            }`,
+            data: {
+              message: `:octopus: Accio delete : ` + this.$route.params.slug,
+              sha: this.configFile.sha
+            },
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(res => {
+            alert("Component deleted");
+            this.$nuxt.$router.replace({
+              path: `/repos/${this.$store.getters.active_repo.name}/${
+                this.$store.getters.active_category
+              }`
+            });
+          });
+        });
+      });
     },
     displayInputs() {
       if (!this.editMode) {
@@ -382,6 +435,14 @@ form {
   color: #2978ee;
   font-size: 14px;
   outline: none;
+}
+.deleteComponentBtn {
+  float: right;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  background: none;
+  color: #f43922;
 }
 .info {
   display: flex;

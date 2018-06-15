@@ -7,7 +7,7 @@
     <div class="flex align-center">
       <h1 class="components__categorytitle">{{ $store.getters.active_category }}</h1>
       <div class="components__componentsCount">{{ $store.getters.components.length }}</div>
-      <button class="newComponent" @click.prevent="displayForm">New component</button>
+      <button class="newComponent" v-if="!$store.getters.isLoading" @click.prevent="displayForm">New component</button>
     </div>
     <form v-if="createMode" class="view-top" ref="form" name="createComponent"  @submit.prevent="createComponent">
       <div v-if="createMode" class="flex">
@@ -323,7 +323,7 @@ export default {
             });
         })
         .catch(e => {
-          this.logoutMixin()
+          this.logoutMixin();
         });
     },
     createComponent() {
