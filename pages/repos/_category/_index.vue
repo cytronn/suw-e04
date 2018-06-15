@@ -96,6 +96,17 @@
           </div>
         </template>
       </div>
+      <div class="noComponents" v-if="$store.getters.components.length === 0">
+        <p>
+          No components found in 
+          <span>
+            {{$store.getters.active_category}} category, 
+          </span> 
+          <a @click.prevent="displayForm" >
+            create your first one now !
+          </a>
+        </p>
+      </div>
     </div>
   </section>
 </template>
@@ -365,6 +376,14 @@ export default {
 }
 .align-center {
   align-items: center;
+}
+.noComponents span {
+  color: black;
+}
+.noComponents a {
+  color: #574beb;
+  cursor: pointer;
+  text-decoration: underline;
 }
 .components {
   position: relative;
